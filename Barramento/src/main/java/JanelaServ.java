@@ -12,6 +12,8 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.text.MaskFormatter;
 
+import com.mycompany.mavenproject1.Cript;
+
 public class JanelaServ extends JFrame {
     private static final long serialVersionUID = 1L;
 
@@ -30,20 +32,20 @@ public class JanelaServ extends JFrame {
         JLabel labelCrip = new JLabel("Mensagem Criptografada: ");
         JLabel labelBin = new JLabel("Mensagem em Binário: ");
         JLabel labelAlg = new JLabel("Mensagem Algoritmo: ");
-        labelEscr.setBounds(50,40,150,20);
-        labelCrip.setBounds(50,80,150,20);
-        labelBin.setBounds(50,120,150,20);
-        labelAlg.setBounds(50,160,150,20);
+        labelAlg.setBounds(50,40,150,20);
+        labelBin.setBounds(50,80,150,20);
+        labelCrip.setBounds(50,120,150,20);
+        labelEscr.setBounds(50,160,150,20);
 
         //Textos a inserir
         JTextField jTextEscr = new JTextField();
         JTextField jTextCrip = new JTextField();
         JTextField jTextBin = new JTextField();
         JTextField jTextAlg = new JTextField();
-        jTextEscr.setBounds(200,40,100,20);
-        jTextCrip.setBounds(200,80,100,20);
-        jTextBin.setBounds(200,120,100,20);
-        jTextAlg.setBounds(200,160,100,20);
+        jTextAlg.setBounds(200,40,100,20);
+        jTextBin.setBounds(200,80,100,20);
+        jTextCrip.setBounds(200,120,100,20);
+        jTextEscr.setBounds(200,160,100,20);
         jTextEscr.setEditable(false);
         jTextCrip.setEditable(false);
         jTextBin.setEditable(false);
@@ -70,7 +72,22 @@ public class JanelaServ extends JFrame {
         buttonLigar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
                 String msg = Conexao.Ligar();
-                jTextEscr.setText(msg);
+                jTextBin.setText(msg);
+
+                String msgCrip = convertToString(msg);
+                jTextCrip.setText(msgCrip);
+
+                //String msgEscr = Cript.descriptografar(msgCrip);
+                //jTextEscr.setText(msgEscr);
+            }
+        });
+
+        buttonLimpar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                jTextEscr.setText("");
+                jTextCrip.setText("");
+                jTextBin.setText("");
+                jTextAlg.setText("");
             }
         });
 
@@ -78,4 +95,36 @@ public class JanelaServ extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
     }
+
+    public static String convertToString(String binaryInput) {
+        //     String stringaux = "";
+        //     char caracterAtual =   
+        //     for (int i =0; i<binaryInput.length(); i+=8){
+        //         stringaux.charAt(i%8)
+            
+        //     for (String binaryValue : binaryArray) {
+        //         int decimalValue = Integer.parseInt(binaryValue, 2);
+        //         char c = (char) decimalValue;
+        //         stringBuilder.append(c);
+        //     }
+        // }
+        // public static String convertToString(String string) {
+        //     StringBuilder caracteresFiltrados = new StringBuilder();
+        //     for (int i = 0; i < string.length(); i++) {
+        //         char caractere = string.charAt(i);
+        //         if (caractere == '0' || caractere == '1') {
+        //             caracteresFiltrados.append(caractere);
+        //         }
+        //     }
+        //     caracteresFiltrados.length();
+        // return caracteresFiltrados.toString();
+        // }
+        
+
+        
+        int decimalValue = Integer.parseInt(binaryInput, 2);
+        return Character.toString((char) decimalValue);
+    }
+
+    
 }

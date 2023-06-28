@@ -12,6 +12,8 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.text.MaskFormatter;
 
+import com.mycompany.mavenproject1.Cript;
+
 public class Janela extends JFrame {
 
        private static final long serialVersionUID = 1L;
@@ -74,25 +76,73 @@ public class Janela extends JFrame {
                 String mensagemEscr = jTextEscr.getText();
 
                 // Lógica para criptografar a mensagem em binário
-                //String mensagemCriptografada = criptografar(mensagemEscr);
-                //jTextCrip.setText(mensagemCriptografada);
+                String mensagemCriptografada = Cript.criptografar(mensagemEscr);
+                jTextCrip.setText(mensagemCriptografada);
 
                 // Lógica para converter a mensagem em binário
-                //String mensagemBinaria = converterParaBinario(mensagemCriptografada);
-                //jTextBin.setText(mensagemBinaria);
+                String mensagemBinaria = convertToBinary(mensagemCriptografada);
+                jTextBin.setText(mensagemBinaria);
+
+                //Lógica para converter mensagem pelo Algoritmo Manchester
+                String mensagemAlg = encodeManchester(mensagemBinaria);
+                jTextAlg.setText(mensagemAlg);
             }
         });
 
 
         buttonEnviar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
-                String mensagemEscr = jTextEscr.getText();
-                Conexao.Enviar(mensagemEscr);
+                String mensagemAlg = jTextBin.getText(); //mudar prara jTextAlg
+                Conexao.Enviar(mensagemAlg);
+                
+                String mensagemBinaria = jTextBin.getText();
+                ManchesterDiferencial Grafico = new ManchesterDiferencial(mensagemBinaria);
+                Grafico.setVisible(true);
             }
-        });
+        }); 
         
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
     }
+
+    public static String convertToBinary(String input) {
+        StringBuilder binaryString = new StringBuilder();
+        
+        for (int i = 0; i < input.length(); i++) {
+            char c = input.charAt(i);
+            int decimalValue = (int) c;
+            StringBuilder binaryValue = new StringBuilder();
+            
+            while (decimalValue > 0) {
+                int remainder = decimalValue % 2;
+                binaryValue.insert(0, remainder);
+                decimalValue /= 2;
+            }
+            while (binaryValue.length() < 8) {
+                binaryValue.insert(0,"0");
+            }
+            binaryString.append(binaryValue);
+        }
+        
+        return binaryString.toString().trim();
+    }
+    
+    public static String encodeManchester(String input) {
+        char[] encoded = new char[input.length() * 2];
+        char previousBit = '1';
+        for (int i = 0; i < input.length(); i++) {
+            char currentBit = input.charAt(i);
+            if (currentBit == '0') {
+                encoded[i * 2] = 'H';
+                encoded[i * 2 + 1] = 'L';
+            } 
+            else{
+                encoded[i * 2] = 'L';
+                encoded[i * 2 + 1] = 'H';
+            }
+        }
+        return new String(encoded);
+    }
+
 }

@@ -1,3 +1,5 @@
+package com.mycompany.mavenproject1;
+
 //Que Deus me perdoe por esse código horrível
 //Pior que nível iniciante
 //Café com leite total
@@ -8,7 +10,7 @@ public class Cript{
 
 	public Cript(){}
 	
-	private int toBaseX(int dec, int base){
+	private static int toBaseX(int dec, int base){
 		int num = 0, count;
 		for(count = 0; dec >= base; dec /= base, count++)
 			num += (dec % base) * Math.pow(10, count);
@@ -16,14 +18,14 @@ public class Cript{
 		return num;
 	}
 
-	private int baseXToDec(int num, int base){
+	private static int baseXToDec(int num, int base){
 		int dec = 0;
 		for(int i = 0; num > 0; num /= 10, i++)
 			dec += num % 10 * Math.pow(base, i);
 		return dec;
 	}
 
-	private int reverseBin(int num){
+	private static int reverseBin(int num){
 		if(num < 0){
 			System.out.println("reverseBin");
 			System.exit(1);
@@ -33,7 +35,7 @@ public class Cript{
 		return reversed;
 	}
 
-	public String criptografar(String texto){
+	public static String criptografar(String texto){
 		if(texto.length() < 1)
 			return null;
 		String codificado = "";
@@ -67,7 +69,7 @@ public class Cript{
 		return codificado;
 	}
 
-	public String descriptografar(String texto){
+	public static String descriptografar(String texto){
 		String decodificado = "";
 		int tam = ((texto.indexOf('=') == -1) ? texto.length() : texto.indexOf('='));
 		int tamMatriz = (tam * 3) / 4;
