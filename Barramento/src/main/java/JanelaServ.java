@@ -82,6 +82,10 @@ public class JanelaServ extends JFrame {
 
                 String msgEscr = Cript.descriptografar(msgCrip);
                 jTextEscr.setText(msgEscr);
+
+                String mensagemBinaria = jTextBin.getText();
+                ManchesterDiferencial Grafico = new ManchesterDiferencial(mensagemBinaria);
+                Grafico.setVisible(true);                
             }
         });
 
