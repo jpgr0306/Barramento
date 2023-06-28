@@ -10,7 +10,9 @@ public class ManchesterDiferencial extends JFrame {
     private JTextField textField;
     private JButton generateButton;
     private String sequence = "";
-    int it;
+    private int sig;
+    private int sigBACK;
+    private int it;
 
     public ManchesterDiferencial(String binary) {
     	it = 0;
@@ -29,7 +31,8 @@ public class ManchesterDiferencial extends JFrame {
                 panel.repaint();
             }
         });*/
-        criarPanel(binary.substring(0, 8), 0);
+        sig = 1;
+    	criarPanel(binary.substring(0, 8), 0, sig);
 
 
  
@@ -48,14 +51,15 @@ public class ManchesterDiferencial extends JFrame {
 
                     if (endIndex < binary.length()) {
                         parte = binary.substring(startIndex, endIndex);
-                        System.out.println("Substring: " + parte);
-                        criarPanel(parte, 1);
+                        System.out.println("Substring: " + sig);
+                        criarPanel(parte, 1, sig);
                     } else {
                         System.out.println("Não há caracteres suficientes na string.");
+                        it--;
                     }
                     
                 }
-                if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+                /*if (e.getKeyCode() == KeyEvent.VK_LEFT) {
                     // Remova o painel do JFrame
                     //getContentPane().remove(panel);
                     //revalidate();
@@ -68,12 +72,13 @@ public class ManchesterDiferencial extends JFrame {
                     if (startIndex >= 0) {
                         parte = binary.substring(startIndex, endIndex);
                         System.out.println("Substring: " + parte);
-                        criarPanel(parte, 1);
+                        criarPanel(parte, 1, sigBACK);
                     } else {
                         System.out.println("Não há caracteres suficientes na string.");
+                        it++;
                     }
                     
-                }
+                }*/
             }
         });
                 
@@ -82,9 +87,9 @@ public class ManchesterDiferencial extends JFrame {
 
     
     
-    public void criarPanel(String binary, int cond)
+    public void criarPanel(String binary, int cond, int signal)
     {
-
+    	sigBACK = 1;
     	if(panel!=null) {
 
     	panel.removeAll();
@@ -95,6 +100,7 @@ public class ManchesterDiferencial extends JFrame {
     	panel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
+            	boolean isHigh;
                 super.paintComponent(g);
 
                 int width = getWidth();
@@ -115,8 +121,13 @@ public class ManchesterDiferencial extends JFrame {
                 g.drawLine(graphStartX, graphStartY + graphHeight / 2, graphStartX + graphWidth + 7, graphStartY + graphHeight / 2); // Eixo X
                 g.drawLine(graphStartX, graphStartY, graphStartX, graphStartY + graphHeight); // Eixo Y
 
+                int fontSize = 20;
+                Font font = new Font("Arial", Font.PLAIN, fontSize);
                 // Desenha o valor 0 no meio do eixo Y
                 FontMetrics fontMetrics = g.getFontMetrics();
+                
+                g.setFont(font);
+                g.drawString(binary, 950, 200);
                 String labelZero = "0";
                 int labelZeroWidth = fontMetrics.stringWidth(labelZero);
                 int labelZeroXPos = graphStartX - labelZeroWidth - 10;
@@ -127,6 +138,7 @@ public class ManchesterDiferencial extends JFrame {
                 int xSpacing = 1 + graphWidth / (binary.length());
 
                 // Define a posição inicial do eixo X
+
                 int xPos = graphStartX + xSpacing / 2;
                 int yPos = graphStartY + graphHeight / 2 + 20;
 
@@ -173,11 +185,30 @@ public class ManchesterDiferencial extends JFrame {
 
                 // Define a posição inicial do sinal
                 xPos = graphStartX;
+
+                if(signal == 1) {
+                if(binary.charAt(0) == '1') {
                 yPos = graphStartY + graphHeight / 2;
                 yPos = Math.max(yPos - graphHeight / 2, graphStartY + 1);
-
-                // Define o estado inicial do sinal
-                boolean isHigh = true;
+                isHigh = true;}
+                else
+                {                   
+                yPos = graphStartY + graphHeight;
+                isHigh = false;}
+                }
+                
+                else
+                {
+                	if(binary.charAt(0) == '1') {
+                    yPos = graphStartY + graphHeight;
+                    isHigh = false;}
+                    else
+                    {
+                    yPos = graphStartY + graphHeight / 2;
+                    yPos = Math.max(yPos - graphHeight / 2, graphStartY + 1);
+                    isHigh = true;
+                    }
+                }
 
                 // Percorre a sequência de caracteres
                 /*for (int i = 0; i < sequence.length(); i++) {
@@ -198,14 +229,35 @@ public class ManchesterDiferencial extends JFrame {
                         // Inverte o estado do sinal se necessário
                         if (bit == '0') {
                         for(int k = 0; k<2; k++) {
-                            isHigh = !isHigh;
+
+                        if(j == 0)
+                        {
+                            g.setColor(Color.RED);
+                            g.drawLine(xPos, graphStartY + graphHeight*2 / 2, xPos, (graphStartY + 1));
+                            sigBACK = 0;
+                        }
                         
-                        
+                        int nextXPos = xPos + xSpacing/2;
+                        int nextYPos = yPos;
+                            
+                        isHigh = !isHigh;
+                        /*if(j == 0)
+                        {
+   
+                            if (isHigh) {
+                                nextYPos = (graphStartY + 1);
+                            } else {
+                                nextYPos = graphStartY + graphHeight;
+                            }
+                            g.setColor(Color.RED);
+                            g.drawLine(xPos, yPos, xPos, nextYPos);
+                            yPos = nextYPos;
+                         	//isHigh = !isHigh;
+                        }*/
+                        //isHigh = !isHigh;
                         
 
                         // Define o próximo ponto de referência
-                        int nextXPos = xPos + xSpacing/2;
-                        int nextYPos;
 
                         // Verifica o estado do sinal
                         if (isHigh) {
@@ -282,10 +334,13 @@ public class ManchesterDiferencial extends JFrame {
                             if(j < binary.length() - 1 && binary.charAt(j + 1) == '0') 
                             yPos = nextYPos;
                         }
-                    }
+}
                 //}
-            }
-        };
+                    if(!isHigh)
+                    	sig = 1;
+                    	else
+                    	sig = 0;}
+};
         
         
         JPanel inputPanel = new JPanel();
@@ -293,14 +348,15 @@ public class ManchesterDiferencial extends JFrame {
         //inputPanel.add(textField);
         //inputPanel.add(generateButton);
         
-        
-        
         if(cond == 0) {
         getContentPane().setLayout(new BorderLayout());
         //getContentPane().add(inputPanel, BorderLayout.NORTH);
         }
         getContentPane().add(panel, BorderLayout.CENTER);
+        //getContentPane().add(texto);
+        //getContentPane().add(texto, 800, 800);
         getContentPane().setVisible(true);
+
     	
     }
 
