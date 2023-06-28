@@ -77,8 +77,11 @@ public class JanelaServ extends JFrame {
                 String msgCrip = convertToString(msg);
                 jTextCrip.setText(msgCrip);
 
-                //String msgEscr = Cript.descriptografar(msgCrip);
-                //jTextEscr.setText(msgEscr);
+                String msgEscr = Cript.descriptografar(msgCrip);
+                jTextEscr.setText(msgEscr);
+
+                String msgAlg = encodeManchester(msg);
+                jTextAlg.setText(msgAlg);
             }
         });
 
@@ -119,12 +122,41 @@ public class JanelaServ extends JFrame {
         //     caracteresFiltrados.length();
         // return caracteresFiltrados.toString();
         // }
-        
+        int it = 0;
+        StringBuilder asciiString = new StringBuilder();
 
-        
-        int decimalValue = Integer.parseInt(binaryInput, 2);
-        return Character.toString((char) decimalValue);
+        while (it * 8 < binaryInput.length()) {
+            int startIndex = it * 8;
+            int endIndex = startIndex + 8;
+            if (endIndex <= binaryInput.length()) {
+                String parte = binaryInput.substring(startIndex, endIndex);
+                int asciiValue = Integer.parseInt(parte, 2);
+                char asciiChar = (char) asciiValue;
+                asciiString.append(asciiChar);
+            }
+            it++;
+        }
+
+        String resultado = asciiString.toString();
+        System.out.println("Resultado: " + resultado);
+        return resultado;
     }
 
+    public static String encodeManchester(String input) {
+        char[] encoded = new char[input.length() * 2];
+        char previousBit = '1';
+        for (int i = 0; i < input.length(); i++) {
+            char currentBit = input.charAt(i);
+            if (currentBit == '0') {
+                encoded[i * 2] = 'H';
+                encoded[i * 2 + 1] = 'L';
+            } 
+            else{
+                encoded[i * 2] = 'L';
+                encoded[i * 2 + 1] = 'H';
+            }
+        }
+        return new String(encoded);
+    }
     
 }
