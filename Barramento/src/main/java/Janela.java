@@ -92,7 +92,7 @@ public class Janela extends JFrame {
 
         buttonEnviar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
-                String mensagemAlg = jTextBin.getText(); //mudar prara jTextAlg
+                String mensagemAlg = jTextAlg.getText(); //mudar prara jTextAlg
                 Conexao.Enviar(mensagemAlg);
                 
                 String mensagemBinaria = jTextBin.getText();
@@ -145,4 +145,33 @@ public class Janela extends JFrame {
         return new String(encoded);
     }
 
+	public static String decodeManchester(String input) {
+    	StringBuilder output = new StringBuilder();
+    	char previousBit = '1';
+    	for (int i = 1; i < input.length(); i ++) {
+    	    char firstTransition = input.charAt(i-1);
+    	    char secondTransition = input.charAt(i);
+	        if (firstTransition == secondTransition) {
+	            output.append(previousBit);
+	        } else if (firstTransition == 'H' && secondTransition == 'L') {
+	            output.append('0');
+	            previousBit = '0';
+	        } else {
+	            output.append('1');
+	            previousBit = '1';
+	        }
+	    }
+	    char firstTransition = input.charAt(input.length()-2);
+	    char secondTransition = input.charAt(input.length()-1);
+	    if (firstTransition == secondTransition) {
+	            output.append(previousBit);
+	        } else if (firstTransition == 'H' && secondTransition == 'L') {
+	            output.append('0');
+    	        previousBit = '0';
+    	    } else {
+    	        output.append('1');
+        	    previousBit = '1';
+    	}
+    	return output.toString();
+	}
 }

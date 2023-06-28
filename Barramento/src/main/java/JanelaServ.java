@@ -71,17 +71,17 @@ public class JanelaServ extends JFrame {
 
         buttonLigar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
-                String msg = Conexao.Ligar();
-                jTextBin.setText(msg);
+                String msgAlg = Conexao.Ligar();
+                jTextAlg.setText(msgAlg);
 
-                String msgCrip = convertToString(msg);
+                String msgBin = decodeManchester(msgAlg);
+                jTextBin.setText(msgBin);
+
+                String msgCrip = convertToString(msgBin);
                 jTextCrip.setText(msgCrip);
 
                 String msgEscr = Cript.descriptografar(msgCrip);
                 jTextEscr.setText(msgEscr);
-
-                String msgAlg = encodeManchester(msg);
-                jTextAlg.setText(msgAlg);
             }
         });
 
@@ -158,5 +158,34 @@ public class JanelaServ extends JFrame {
         }
         return new String(encoded);
     }
-    
+
+	public static String decodeManchester(String input) {
+    	StringBuilder output = new StringBuilder();
+    	char previousBit = '1';
+    	for (int i = 1; i < input.length(); i += 2) {
+    	    char firstTransition = input.charAt(i-1);
+    	    char secondTransition = input.charAt(i);
+	        if (firstTransition == secondTransition) {
+	            output.append(previousBit);
+	        } else if (firstTransition == 'H' && secondTransition == 'L') {
+	            output.append('0');
+	            previousBit = '0';
+	        } else {
+	            output.append('1');
+	            previousBit = '1';
+	        }
+	    }
+	    char firstTransition = input.charAt(input.length()-2);
+	    char secondTransition = input.charAt(input.length()-1);
+	    if (firstTransition == secondTransition) {
+	            output.append(previousBit);
+	        } else if (firstTransition == 'H' && secondTransition == 'L') {
+	            output.append('0');
+    	        previousBit = '0';
+    	    } else {
+    	        output.append('1');
+        	    previousBit = '1';
+    	}
+    	return output.toString();
+	}    
 }
